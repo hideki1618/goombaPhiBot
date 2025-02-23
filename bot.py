@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import os
 import asyncio
+from server import run_server 
 
 from config import DISCORD_TOKEN
 
@@ -25,6 +26,8 @@ async def on_ready():
     print("Bot is ready!")
 
 async def main():
+    loop = asyncio.get_running_loop()
+    loop.run_in_executor(None, run_server)
     async with bot:
         await load_cogs()
         await bot.start(DISCORD_TOKEN)
