@@ -1,13 +1,21 @@
+import logging
 import firebase_admin
 from firebase_admin import credentials, firestore
 from config import GOOGLE_APPLICATION_CREDENTIALS,FIRESTORE_COLLECTION
+
+logging.basicConfig(level=logging.DEBUG)
 
 # # Load credentials
 # cred = credentials.Certificate(GOOGLE_APPLICATION_CREDENTIALS)
 # firebase_admin.initialize_app(cred)
 
 # Connect to Firestore
-db = firestore.Client(FIRESTORE_COLLECTION)
+try:
+    db = firestore.Client(FIRESTORE_COLLECTION)
+    logging.info("✅ Firestore connection successful!")
+except Exception as e:
+    logging.error(f"❌ Firestore connection failed: {e}")
+
 servers_collection = db.collection(FIRESTORE_COLLECTION)
 
 def set_default_twitch_channel(guild_id: int, channel_id: str):
