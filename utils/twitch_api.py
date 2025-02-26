@@ -3,15 +3,16 @@ from twitchAPI.twitch import Twitch
 from twitchAPI.helper import first
 from utils.helpers import timestamp_discord
 
-async def get_twitch_schedule(channel,schedule_limit):
+async def get_twitch_schedule(channel_id,schedule_limit):
     # initialize the twitch instance, this will by default also create a app authentication for you
     twitch = await Twitch(TWITCH_CLIENT_ID, TWITCH_ACCESS_TOKEN)
+    
     # call the API for the data of your twitch user
     # this returns a async generator that can be used to iterate over all results
     # but we are just interested in the first result
     # using the first helper makes this easy.
-    user = await first(twitch.get_users(logins=channel))
-    schedule = await twitch.get_channel_stream_schedule(user.id)
+    schedule = await twitch.get_channel_stream_schedule(channel_id)
+    
     schedule_count = 0
     schedule_return = []
     async for segment in schedule:
@@ -21,3 +22,9 @@ async def get_twitch_schedule(channel,schedule_limit):
             break
     await twitch.close()
     return "\n".join(schedule_return)
+
+async def get_twitch_user_id(channel):
+    twitch = await Twitch(TWITCH_CLIENT_ID, TWITCH_ACCESS_TOKEN)
+    user = await first(twitch.get_users(logins=channel))
+    await twitch.close()
+    return user.id, user.display_name
