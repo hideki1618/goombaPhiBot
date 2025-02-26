@@ -32,7 +32,7 @@ class Settings(commands.Cog):
         )
 
     @app_commands.command(name="setschedulemessage", description="Set a message for the schedule message in this server")
-    async def set_channel(self, interaction: discord.Interaction, schedule_message: str):
+    async def set_schedule_message(self, interaction: discord.Interaction, schedule_message: str):
         """Command to set the schedule message for this server."""
         set_schedule_message(interaction.guild.id, schedule_message)
         await interaction.response.send_message(
