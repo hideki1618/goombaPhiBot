@@ -5,6 +5,7 @@ from utils.twitch_api import get_twitch_schedule
 from utils.data_management import get_default_twitch_channel, get_schedule_message
 import nest_asyncio
 import asyncio
+import logging
 
 class Schedule(commands.Cog):
     def __init__(self, bot):
@@ -13,6 +14,7 @@ class Schedule(commands.Cog):
     @app_commands.command(name="schedule", description="Publish the Twitch schedule for the channel associated with this server.")
     @app_commands.describe(schedule_limit="Number of upcoming streams to fetch")
     async def fetch_schedule(self, interaction: discord.Interaction, schedule_limit: int = 1):
+        logging.info("Entered schedule command")
         """
         Fetches and displays the Twitch schedule for a given channel.
         """

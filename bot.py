@@ -28,6 +28,7 @@ async def load_cogs():
         if filename.endswith(".py"):
             cog_name = f"cogs.{filename[:-3]}"
             await bot.load_extension(cog_name)
+            logger.info(f"Loaded cog: {cog_name}")
 
 @bot.event
 async def on_ready():

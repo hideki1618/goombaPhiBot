@@ -4,6 +4,7 @@ from discord.ext import commands
 from utils.data_management import set_schedule_message
 from utils.twitch_api import get_twitch_user_id
 from utils.views import ConfirmView
+import logging
 
 class Settings(commands.Cog):
     def __init__(self, bot):
@@ -11,6 +12,7 @@ class Settings(commands.Cog):
 
     @app_commands.command(name="setchannel", description="Set a default Twitch channel for this server")
     async def set_channel(self, interaction: discord.Interaction, channel_name: str):
+        logging.info("Entered set_channel command")
         """Command to set the default Twitch channel, storing the Twitch ID instead of the name."""
     
         # Step 1: Fetch Twitch ID based on channel name
@@ -33,6 +35,7 @@ class Settings(commands.Cog):
 
     @app_commands.command(name="setschedulemessage", description="Set a message for the schedule message in this server")
     async def set_schedule_message(self, interaction: discord.Interaction, schedule_message: str):
+        logging.info("Entered set_schedule_message command")
         """Command to set the schedule message for this server."""
         set_schedule_message(interaction.guild.id, schedule_message)
         await interaction.response.send_message(
