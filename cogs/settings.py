@@ -16,7 +16,7 @@ class Settings(commands.Cog):
         """Command to set the default Twitch channel, storing the Twitch ID instead of the name."""
     
         # Step 1: Fetch Twitch ID based on channel name
-        twitch_id, fetched_name = get_twitch_user_id(channel_name)  # Function should return (ID, display_name)
+        twitch_id, fetched_name = await get_twitch_user_id(channel_name)  # Function should return (ID, display_name)
 
         if not twitch_id:
             await interaction.response.send_message(
