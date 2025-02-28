@@ -1,5 +1,6 @@
 import logging
 from firebase_admin import credentials, firestore
+from google.cloud.exceptions import NotFound, GoogleCloudError
 from config import FIRESTORE_COLLECTION
 
 logging.basicConfig(level=logging.DEBUG)
@@ -15,8 +16,13 @@ servers_collection = db.collection(FIRESTORE_COLLECTION)
 
 def set_default_twitch_channel(guild_id: int, channel_id: str):
     """Set the default Twitch channel for a server in Firestore."""
-    servers_collection.document(str(guild_id)).set({"twitch_channel_id": channel_id})
-    print(f"✅ Set default Twitch channel for {guild_id}: {channel_id}")
+    server_doc = servers_collection.document(str(guild_id))
+    try:
+        server_doc.update({"twitch_channel_id": channel_id})
+    except NotFound:
+        server_doc.set({"twitch_channel_id": channel_id})
+    except GoogleCloudError as e:
+        raise GoogleCloudError(f"Error updating database: {e}")
 
 def get_default_twitch_channel(guild_id: int) -> str:
     """Retrieve the default Twitch channel ID for a server from Firestore."""
@@ -27,8 +33,13 @@ def get_default_twitch_channel(guild_id: int) -> str:
 
 def set_schedule_message(guild_id: int, schedule_message: str):
     """Set the schedule message for a server in Firestore."""
-    servers_collection.document(str(guild_id)).set({"schedule_message": schedule_message})
-    print(f"✅ Set default Twitch channel for {guild_id}: {schedule_message}")
+    server_doc = servers_collection.document(str(guild_id))
+    try:
+        server_doc.update({"schedule_message": schedule_message})
+    except NotFound:
+        server_doc.set({"schedule_message": schedule_message})
+    except GoogleCloudError as e:
+        raise GoogleCloudError(f"Error updating database: {e}")
 
 def get_schedule_message(guild_id: int) -> str:
     """Retrieve the schedule message for a server from Firestore."""
