@@ -18,6 +18,14 @@ class Schedule(commands.Cog):
         """
         Fetches and displays the Twitch schedule for a given channel.
         """
+
+        if schedule_limit < 1:
+            await interaction.response.send_message(
+                "⚠️ The schedule limit must be at least 1.",
+                ephemeral=True
+            )
+            return
+        
         channel_id = get_default_twitch_channel(interaction.guild.id)
         if channel_id is None:
             await interaction.response.send_message(

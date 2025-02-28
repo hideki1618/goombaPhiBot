@@ -4,6 +4,7 @@ from discord.ext import commands
 from utils.data_management import set_schedule_message
 from utils.twitch_api import get_twitch_user_id
 from utils.views import ConfirmView
+from google.cloud.exceptions import GoogleCloudError
 import logging
 
 class Settings(commands.Cog):
@@ -37,7 +38,12 @@ class Settings(commands.Cog):
     async def set_schedule_message(self, interaction: discord.Interaction, schedule_message: str):
         logging.info("Entered set_schedule_message command")
         """Command to set the schedule message for this server."""
-        set_schedule_message(interaction.guild.id, schedule_message)
+        try:
+            set_schedule_message(interaction.guild.id, schedule_message)
+        except GoogleCloudError as e:
+            # Catch general Firestore errors
+            await interaction.response.send_message(f"❌ Error updating database: {e}", ephemeral=True)
+            return
         await interaction.response.send_message(
             f"✅ Schedule message set to **{schedule_message}**.",
             ephemeral=True

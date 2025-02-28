@@ -1,5 +1,6 @@
 import discord
 from utils.data_management import set_default_twitch_channel
+from google.cloud.exceptions import GoogleCloudError
 
 class ConfirmView(discord.ui.View):
     def __init__(self, interaction, twitch_id, channel_name, cog):
@@ -11,7 +12,12 @@ class ConfirmView(discord.ui.View):
 
     @discord.ui.button(label="✅ Confirm", style=discord.ButtonStyle.success)
     async def confirm(self, interaction: discord.Interaction, button: discord.ui.Button):
-        set_default_twitch_channel(self.interaction.guild.id, self.twitch_id)
+        try:
+            set_default_twitch_channel(self.interaction.guild.id, self.twitch_id)
+        except GoogleCloudError as e:
+            # Catch general Firestore errors
+            await interaction.response.send_message(f"❌ Error updating database: {e}", ephemeral=True)
+            return
         await self.interaction.followup.send(
             f"✅ Default Twitch channel set to **{self.channel_name}**).",
             ephemeral=True
