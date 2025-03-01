@@ -22,7 +22,7 @@ class Settings(commands.Cog):
         twitch_id, fetched_name = await get_twitch_user_id(channel_name)  # Function should return (ID, display_name)
 
         if not twitch_id:
-            await interaction.response.send_message(
+            await interaction.followup.send(
                 f"⚠️ Could not find a Twitch channel named **{channel_name}**. Please check the name and try again.",
                 ephemeral=True
             )
@@ -32,7 +32,7 @@ class Settings(commands.Cog):
         # Step 2: Ask user for confirmation (ephemeral message)
         view = ConfirmView(interaction, twitch_id, fetched_name, self)
         logging.info("Created ConfirmView instance")
-        await interaction.response.send_message( 
+        await interaction.followup.send( 
             f"Is **{fetched_name}** the correct Twitch channel?", 
             view=view, 
             ephemeral=True 
