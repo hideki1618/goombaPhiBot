@@ -30,10 +30,10 @@ class Settings(commands.Cog):
         # Step 2: Ask user for confirmation (ephemeral message)
         view = ConfirmView(interaction, twitch_id, fetched_name, self)
         logging.info("Created ConfirmView instance")
-        message = await interaction.response.send_message(
-            f"Is **{fetched_name}** the correct Twitch channel?",
-            view=view,
-            ephemeral=True
+        await interaction.response.send_message( \
+            f"Is **{fetched_name}** the correct Twitch channel?", \
+            view=view, \
+            ephemeral=True \
         )
         view.original_message = await interaction.original_response()  # Store the message reference
 
