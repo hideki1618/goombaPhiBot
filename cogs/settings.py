@@ -15,6 +15,8 @@ class Settings(commands.Cog):
     async def set_channel(self, interaction: discord.Interaction, channel_name: str):
         logging.info("Entered set_channel command")
         """Command to set the default Twitch channel, storing the Twitch ID instead of the name."""
+        # 🕒 Defer the response immediately
+        await interaction.response.defer(ephemeral=True)
     
         # Step 1: Fetch Twitch ID based on channel name
         twitch_id, fetched_name = await get_twitch_user_id(channel_name)  # Function should return (ID, display_name)
@@ -30,10 +32,10 @@ class Settings(commands.Cog):
         # Step 2: Ask user for confirmation (ephemeral message)
         view = ConfirmView(interaction, twitch_id, fetched_name, self)
         logging.info("Created ConfirmView instance")
-        await interaction.response.send_message( \
-            f"Is **{fetched_name}** the correct Twitch channel?", \
-            view=view, \
-            ephemeral=True \
+        await interaction.response.send_message( 
+            f"Is **{fetched_name}** the correct Twitch channel?", 
+            view=view, 
+            ephemeral=True 
         )
         view.original_message = await interaction.original_response()  # Store the message reference
 
