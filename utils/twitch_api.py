@@ -11,11 +11,14 @@ async def get_twitch_schedule(channel_id,schedule_limit):
     # this returns a async generator that can be used to iterate over all results
     # but we are just interested in the first result
     # using the first helper makes this easy.
-    schedule = await twitch.get_channel_stream_schedule(channel_id)
+    response = await twitch.get_channel_stream_schedule(channel_id)
+
+    if not response or "data" not in response or not response["data"]:
+        return None  # No schedule found
     
     schedule_count = 0
     schedule_return = []
-    async for segment in schedule:
+    async for segment in response:
         schedule_return.append(timestamp_discord(segment.start_time))
         schedule_count += 1
         if schedule_count == schedule_limit:

@@ -39,13 +39,8 @@ def set_schedule_message(guild_id: int, schedule_message: str):
     server_doc = servers_collection.document(str(guild_id))
     try:
         
-        logging.info(f"[BEFORE] Current Firestore data for {guild_id}: {server_doc.get().to_dict()}")
-        # 🔍 Retrieve existing data first
-        
         # 🔄 Update only the necessary field
         server_doc.update({"schedule_message": schedule_message})  # ✅ Prevents overwriting
-        logging.info(f"[AFTER] updating Firestore data for {guild_id}: {server_doc.get().to_dict()}")
-        
         
     except NotFound:
         server_doc.set({"schedule_message": schedule_message}, merge=True)        

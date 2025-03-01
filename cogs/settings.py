@@ -5,7 +5,6 @@ from utils.data_management import set_schedule_message
 from utils.twitch_api import get_twitch_user_id
 from utils.views import ConfirmView
 from google.cloud.exceptions import GoogleCloudError
-import logging
 
 class Settings(commands.Cog):
     def __init__(self, bot):
@@ -13,7 +12,6 @@ class Settings(commands.Cog):
 
     @app_commands.command(name="setchannel", description="Set a default Twitch channel for this server")
     async def set_channel(self, interaction: discord.Interaction, channel_name: str):
-        logging.info("Entered set_channel command")
         """Command to set the default Twitch channel, storing the Twitch ID instead of the name."""
         # 🕒 Defer the response immediately
         await interaction.response.defer(ephemeral=True)
@@ -27,11 +25,9 @@ class Settings(commands.Cog):
                 ephemeral=True
             )
             return
-        logging.info("Found Twitch ID: %s", twitch_id)
-
+        
         # Step 2: Ask user for confirmation (ephemeral message)
         view = ConfirmView(interaction, twitch_id, fetched_name, self)
-        logging.info("Created ConfirmView instance")
         await interaction.followup.send( 
             f"Is **{fetched_name}** the correct Twitch channel?", 
             view=view, 
@@ -41,7 +37,6 @@ class Settings(commands.Cog):
 
     @app_commands.command(name="setschedulemessage", description="Set a message for the schedule message in this server")
     async def set_schedule_message(self, interaction: discord.Interaction, schedule_message: str):
-        logging.info("Entered set_schedule_message command")
         """Command to set the schedule message for this server."""
 
         # 🕒 Defer the response immediately
