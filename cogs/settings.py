@@ -25,9 +25,11 @@ class Settings(commands.Cog):
                 ephemeral=True
             )
             return
+        logging.info("Found Twitch ID: %s", twitch_id)
 
         # Step 2: Ask user for confirmation (ephemeral message)
         view = ConfirmView(interaction, twitch_id, fetched_name, self)
+        logging.info("Created ConfirmView instance")
         message = await interaction.response.send_message(
             f"Is **{fetched_name}** the correct Twitch channel?",
             view=view,
@@ -49,6 +51,7 @@ class Settings(commands.Cog):
             # Catch general Firestore errors
             await interaction.followup.send(f"❌ Error updating database: {e}", ephemeral=True)
             return
+        
         await interaction.followup.send(
             f"✅ Schedule message set to **{schedule_message}**.",
             ephemeral=True
