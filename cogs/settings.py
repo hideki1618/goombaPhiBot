@@ -11,7 +11,7 @@ class Settings(commands.Cog):
         self.bot = bot
 
     @app_commands.command(name="setchannel", description="Set a default Twitch channel for this server")
-    @app_commands.default_permissions(manage_messages=True)
+    # @app_commands.default_permissions(manage_messages=True)
     @app_commands.describe(channel_name="The Twitch channel name to set")
     async def set_channel(self, interaction: discord.Interaction, channel_name: str):
         """Command to set the default Twitch channel, storing the Twitch ID instead of the name."""
@@ -38,7 +38,7 @@ class Settings(commands.Cog):
         view.original_message = await interaction.original_response()  # Store the message reference
 
     @app_commands.command(name="setschedulemessage", description="Set a message for the schedule message in this server")
-    @app_commands.default_permissions(manage_messages=True)
+    # @app_commands.default_permissions(manage_messages=True)
     @app_commands.describe(schedule_message="The message to set")
     async def set_schedule_message(self, interaction: discord.Interaction, schedule_message: str):
         """Command to set the schedule message for this server."""
