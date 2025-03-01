@@ -11,6 +11,7 @@ class Schedule(commands.Cog):
         self.bot = bot
 
     @app_commands.command(name="schedule", description="Publish the Twitch schedule for the channel associated with this server.")
+    @app_commands.default_permissions(manage_messages=True)
     @app_commands.describe(schedule_limit="Number of upcoming streams to fetch")
     async def fetch_schedule(self, interaction: discord.Interaction, schedule_limit: int = 1):
         """
