@@ -41,8 +41,7 @@ async def on_interaction(interaction: discord.Interaction):
     if interaction.command:
         """Log whenever a user interacts with a slash command."""
         logger.info(f"Command used: /{interaction.command.name} by {interaction.user} in {interaction.guild}")
-    await bot.process_application_commands(interaction)  # Important! Pass interaction forward
-
+    
 @bot.event
 async def on_command_error(interaction: discord.Interaction, error):
     logger.error(f"Error in command /{interaction.command.name}: {error}")

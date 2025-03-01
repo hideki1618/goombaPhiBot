@@ -28,23 +28,28 @@ class Settings(commands.Cog):
 
         # Step 2: Ask user for confirmation (ephemeral message)
         view = ConfirmView(interaction, twitch_id, fetched_name, self)
-        await interaction.response.send_message(
+        message = await interaction.response.send_message(
             f"Is **{fetched_name}** the correct Twitch channel?",
             view=view,
             ephemeral=True
         )
+        view.original_message = await interaction.original_response()  # Store the message reference
 
     @app_commands.command(name="setschedulemessage", description="Set a message for the schedule message in this server")
     async def set_schedule_message(self, interaction: discord.Interaction, schedule_message: str):
         logging.info("Entered set_schedule_message command")
         """Command to set the schedule message for this server."""
+
+        # 🕒 Defer the response immediately
+        await interaction.response.defer(ephemeral=True)
+
         try:
             set_schedule_message(interaction.guild.id, schedule_message)
         except GoogleCloudError as e:
             # Catch general Firestore errors
-            await interaction.response.send_message(f"❌ Error updating database: {e}", ephemeral=True)
+            await interaction.followup.send(f"❌ Error updating database: {e}", ephemeral=True)
             return
-        await interaction.response.send_message(
+        await interaction.followup.send(
             f"✅ Schedule message set to **{schedule_message}**.",
             ephemeral=True
         )
