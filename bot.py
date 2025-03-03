@@ -37,6 +37,7 @@ async def on_ready():
     logger.info(f"Logged in as {bot.user.name}")
     try:
         guild = GUILD_ID
+        bot.tree.copy_global_to(guild=guild)
         synced = await bot.tree.sync(guild=guild)
         logger.info(f"Synced {len(synced)} commands in {bot.get_guild(guild.id).name}")
     except Exception as e:

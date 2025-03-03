@@ -16,10 +16,10 @@ async def get_twitch_schedule(channel_id,schedule_limit):
         response = await twitch.get_channel_stream_schedule(channel_id,first=schedule_limit)
     except TwitchResourceNotFound:
         return None
-
+    
     schedule_return = []
-    async for segment in response:
-        schedule_return.append(timestamp_discord(segment.start_time))    
+    for segment in response.segments:
+        schedule_return.append(timestamp_discord(segment.start_time))
     await twitch.close()
     return "\n".join(schedule_return)
 
