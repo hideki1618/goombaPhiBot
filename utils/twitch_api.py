@@ -1,6 +1,7 @@
 from config import TWITCH_CLIENT_ID, TWITCH_ACCESS_TOKEN
 from twitchAPI.twitch import Twitch
 from twitchAPI.helper import first
+from twitchAPI.type import TwitchResourceNotFound
 from utils.helpers import timestamp_discord
 
 async def get_twitch_schedule(channel_id,schedule_limit):
@@ -11,18 +12,14 @@ async def get_twitch_schedule(channel_id,schedule_limit):
     # this returns a async generator that can be used to iterate over all results
     # but we are just interested in the first result
     # using the first helper makes this easy.
-    response = await twitch.get_channel_stream_schedule(channel_id)
+    try:
+        response = await twitch.get_channel_stream_schedule(channel_id,first=schedule_limit)
+    except TwitchResourceNotFound:
+        return None
 
-    if not response or "data" not in response or not response["data"]:
-        return None  # No schedule found
-    
-    schedule_count = 0
     schedule_return = []
     async for segment in response:
-        schedule_return.append(timestamp_discord(segment.start_time))
-        schedule_count += 1
-        if schedule_count == schedule_limit:
-            break
+        schedule_return.append(timestamp_discord(segment.start_time))    
     await twitch.close()
     return "\n".join(schedule_return)
 

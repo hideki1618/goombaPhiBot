@@ -38,9 +38,9 @@ async def on_ready():
     try:
         guild = GUILD_ID
         synced = await bot.tree.sync(guild=guild)
-        print(f"Synced {len(synced)} commands in {bot.get_guild(guild.id).name}")
+        logger.info(f"Synced {len(synced)} commands in {bot.get_guild(guild.id).name}")
     except Exception as e:
-        print("Failed to sync commands:", e)
+        logger.info("Failed to sync commands:", e)
     logger.info("Bot is ready!")
 
 @bot.event
