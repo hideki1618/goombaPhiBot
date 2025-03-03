@@ -11,16 +11,17 @@ class Settings(commands.Cog):
         self.bot = bot
 
     @app_commands.command(name="setchannel", description="Set a default Twitch channel for this server")
-    # @app_commands.default_permissions(manage_messages=True)
+    @app_commands.default_permissions(manage_messages=True)
     @app_commands.describe(channel_name="The Twitch channel name to set")
     async def set_channel(self, interaction: discord.Interaction, channel_name: str):
         """Command to set the default Twitch channel, storing the Twitch ID instead of the name."""
         # 🕒 Defer the response immediately
         await interaction.response.defer(ephemeral=True)
     
-        # Step 1: Fetch Twitch ID based on channel name
+        # Fetch Twitch ID based on channel name
         twitch_id, fetched_name = await get_twitch_user_id(channel_name)  # Function should return (ID, display_name)
 
+        # Check if channel exists
         if not twitch_id:
             await interaction.followup.send(
                 f"⚠️ Could not find a Twitch channel named **{channel_name}**. Please check the name and try again.",
@@ -28,7 +29,7 @@ class Settings(commands.Cog):
             )
             return
         
-        # Step 2: Ask user for confirmation (ephemeral message)
+        # Ask user for confirmation (ephemeral message)
         view = ConfirmView(interaction, twitch_id, fetched_name, self)
         await interaction.followup.send( 
             f"Is **{fetched_name}** the correct Twitch channel?", 
@@ -38,7 +39,7 @@ class Settings(commands.Cog):
         view.original_message = await interaction.original_response()  # Store the message reference
 
     @app_commands.command(name="setschedulemessage", description="Set a message for the schedule message in this server")
-    # @app_commands.default_permissions(manage_messages=True)
+    @app_commands.default_permissions(manage_messages=True)
     @app_commands.describe(schedule_message="The message to set")
     async def set_schedule_message(self, interaction: discord.Interaction, schedule_message: str):
         """Command to set the schedule message for this server."""
@@ -46,6 +47,7 @@ class Settings(commands.Cog):
         # 🕒 Defer the response immediately
         await interaction.response.defer(ephemeral=True)
 
+        # Update the schedule message in the database
         try:
             set_schedule_message(interaction.guild.id, schedule_message)
         except GoogleCloudError as e:
@@ -53,6 +55,7 @@ class Settings(commands.Cog):
             await interaction.followup.send(f"❌ Error updating database: {e}", ephemeral=True)
             return
         
+        # Confirm the schedule message was set
         await interaction.followup.send(
             f"✅ Schedule message set to **{schedule_message}**.",
             ephemeral=True
