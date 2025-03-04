@@ -32,6 +32,14 @@ async def load_cogs():
             logger.info(f"Loaded cog: {cog_name}")
 
 @bot.event
+async def on_guild_join(guild):
+    """Event handler for when the bot joins a guild."""
+    logger.info(f"Joined guild: {guild.name}")
+    bot.tree.copy_global_to(guild=guild)
+    synced = await bot.tree.sync(guild=guild)
+    logger.info(f"Synced {len(synced)} commands in {guild.name}")
+
+@bot.event
 async def on_ready():
     """Event handler for when the bot is ready."""
     logger.info(f"Logged in as {bot.user.name}")
