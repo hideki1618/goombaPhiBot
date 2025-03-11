@@ -50,7 +50,8 @@ class Schedule(commands.Cog):
             schedule_message = f"🎶 This Week's Streams🎶"
 
         # Send the schedule message
-        await interaction.followup.send(f"{schedule_message}\n{schedule_string}")
+        await interaction.followup.send(f"{schedule_message}\n{schedule_string}",
+                                        allowed_mentions=discord.AllowedMentions(everyone=True, roles=True))
 
 # Add Cog to bot
 async def setup(bot):
