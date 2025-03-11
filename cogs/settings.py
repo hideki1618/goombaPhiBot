@@ -43,13 +43,14 @@ class Settings(commands.Cog):
     @app_commands.describe(schedule_message="The message to set")
     async def set_schedule_message(self, interaction: discord.Interaction, schedule_message: str):
         """Command to set the schedule message for this server."""
+        formatted_message = schedule_message.replace("\\n", "\n") # Replace escaped newlines with actual newlines
 
         # 🕒 Defer the response immediately
         await interaction.response.defer(ephemeral=True)
 
         # Update the schedule message in the database
         try:
-            set_schedule_message(interaction.guild.id, schedule_message)
+            set_schedule_message(interaction.guild.id, formatted_message)
         except GoogleCloudError as e:
             # Catch general Firestore errors
             await interaction.followup.send(f"❌ Error updating database: {e}", ephemeral=True)
@@ -57,7 +58,7 @@ class Settings(commands.Cog):
         
         # Confirm the schedule message was set
         await interaction.followup.send(
-            f"✅ Schedule message set to **{schedule_message}**.",
+            f"✅ Schedule message set to:\n```{formatted_message}```",
             ephemeral=True
         )
     
