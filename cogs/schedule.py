@@ -18,11 +18,11 @@ class Schedule(commands.Cog):
         Fetches and displays the Twitch schedule for a given channel.
         """
         # 🕒 Defer the response immediately
-        await interaction.response.defer()  # Prevents "This interaction failed" error
+        await interaction.response.defer(ephemeral=True)  # Prevents "This interaction failed" error
 
         # Validate schedule limit
         if schedule_limit < 1:
-            await interaction.response.send_message(
+            await interaction.followup.send(
                 "⚠️ The schedule limit must be at least 1.",
                 ephemeral=True
             )
@@ -31,7 +31,7 @@ class Schedule(commands.Cog):
         # Fetch default Twitch channel for this server
         channel_id = get_default_twitch_channel(interaction.guild.id)
         if channel_id is None:
-            await interaction.response.send_message(
+            await interaction.followup.send(
                 "⚠️ No default Twitch channel set for this server. Please set one using `/setchannel`.",
                 ephemeral=True
             )
@@ -50,8 +50,10 @@ class Schedule(commands.Cog):
             schedule_message = f"🎶 This Week's Streams🎶"
 
         # Send the schedule message
-        await interaction.followup.send(f"{schedule_message}\n{schedule_string}",
-                                        allowed_mentions=discord.AllowedMentions(everyone=True, roles=True))
+        await interaction.followup.send("Schedule fetched successfully! Now sending to the channel...")
+        channel = self.bot.get_channel(interaction.channel_id)
+        await channel.send(f"{schedule_message}\n{schedule_string}",
+                            allowed_mentions=discord.AllowedMentions(everyone=True, roles=True))
 
 # Add Cog to bot
 async def setup(bot):
